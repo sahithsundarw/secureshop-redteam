@@ -156,3 +156,15 @@ def test_non_admin_cannot_change_products(client, db_path):
     assert client.post("/admin/products/new", data=GOOD).status_code == 403
     assert client.post("/admin/products/1/delete").status_code == 403
     assert product_by_name(db_path, "Water Filter") is None
+
+
+def test_delete_product_only_in_a_cart_removes_cart_rows(admin, client, db_path):
+    admin.post("/admin/products/new", data=GOOD)
+    pid = product_by_name(db_path, "Water Filter")["id"]
+    conn = connect(db_path)
+    conn.execute("INSERT INTO cart_items (user_id, product_id, quantity) VALUES (2, ?, 1)", (pid,))
+    conn.commit()
+    conn.close()
+    assert admin.post(f"/admin/products/{pid}/delete").status_code == 302
+    assert product_by_name(db_path, "Water Filter") is None
+    assert rows(db_path, "SELECT id FROM cart_items WHERE product_id = ?", (pid,)) == []

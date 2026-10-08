@@ -105,17 +105,21 @@ def product_edit(product_id):
 @admin_required
 def product_delete(product_id):
     product = _get_product(product_id)
-    # SQLite does not enforce foreign keys by default, so check references explicitly.
-    referenced, _ = _run(
-        "SELECT 1 FROM order_items WHERE product_id = ? UNION SELECT 1 FROM cart_items"
-        " WHERE product_id = ?",
-        (product_id, product_id),
-    )
-    if referenced:
-        rows, _ = _run("SELECT * FROM products ORDER BY id")
-        message = f"{product['name']} is part of existing orders or carts and cannot be deleted."
-        return render_template("admin/products.html", products=rows, error=message), 409
-    _run("DELETE FROM products WHERE id = ?", (product_id,), commit=True)
+    conn = connect(current_app.config["DB_PATH"])
+    try:
+        # SQLite does not enforce foreign keys by default, so check order references explicitly.
+        # Order history must stay intact; carts are just cleared of the product.
+        if conn.execute(
+            "SELECT 1 FROM order_items WHERE product_id = ?", (product_id,)
+        ).fetchone():
+            rows = conn.execute("SELECT * FROM products ORDER BY id").fetchall()
+            message = f"{product['name']} is part of existing orders and cannot be deleted."
+            return render_template("admin/products.html", products=rows, error=message), 409
+        conn.execute("DELETE FROM cart_items WHERE product_id = ?", (product_id,))
+        conn.execute("DELETE FROM products WHERE id = ?", (product_id,))
+        conn.commit()
+    finally:
+        conn.close()
     return redirect(url_for("admin.products"))
 
 
