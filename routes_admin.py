@@ -1,16 +1,22 @@
 from functools import wraps
 
-from flask import Blueprint, abort, current_app, redirect, render_template, request, url_for
+from flask import Blueprint, abort, current_app, redirect, render_template, request, session, url_for
 
 from db import connect
+from security_log import log_event
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 
 def admin_required(view):
-    # VULNERABLE (V4, A01 Broken Access Control): neither login nor the admin role is checked.
+    # V4 fix: anonymous users go to login; signed-in non-admins get 403.
     @wraps(view)
     def wrapped(*args, **kwargs):
+        if not session.get("user_id"):
+            return redirect(url_for("auth.login"))
+        if session.get("role") != "admin":
+            log_event("access_denied", f"{request.path} by user {session['user_id']}")
+            abort(403)
         return view(*args, **kwargs)
 
     return wrapped
@@ -78,6 +84,7 @@ def product_new():
         values,
         commit=True,
     )
+    log_event("admin_action", f"product created: {values[0]!r}")
     return redirect(url_for("admin.products"))
 
 
@@ -95,6 +102,7 @@ def product_edit(product_id):
         (*values, product_id),
         commit=True,
     )
+    log_event("admin_action", f"product {product_id} edited")
     return redirect(url_for("admin.products"))
 
 
@@ -117,11 +125,13 @@ def product_delete(product_id):
         conn.commit()
     finally:
         conn.close()
+    log_event("admin_action", f"product {product_id} deleted")
     return redirect(url_for("admin.products"))
 
 
 @admin_bp.route("/users")
 @admin_required
 def users():
+    log_event("admin_action", "user list viewed")
     rows, _ = _run("SELECT id, username, email, role FROM users ORDER BY id")
     return render_template("admin/users.html", users=rows)

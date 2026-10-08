@@ -14,6 +14,7 @@ from flask import (
 )
 
 from db import connect
+from security_log import log_event
 
 account_bp = Blueprint("account", __name__)
 
@@ -192,10 +193,12 @@ def orders():
 def order_detail(order_id):
     conn = _conn()
     order = conn.execute(
-        "SELECT id, total, created_at FROM orders WHERE id = ?",  # VULNERABLE (V3, A01 IDOR): no owner check
-        (order_id,),
+        "SELECT id, total, created_at FROM orders WHERE id = ? AND user_id = ?",  # V3 fix: owner check
+        (order_id, session["user_id"]),
     ).fetchone()
     if order is None:
+        # 404 for both "missing" and "someone else's", so ids cannot be probed.
+        log_event("access_denied", f"order {order_id} not available to user {session['user_id']}")
         abort(404)
     items = conn.execute(
         "SELECT p.name, oi.quantity, oi.price, oi.quantity * oi.price AS subtotal"
