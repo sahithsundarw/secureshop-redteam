@@ -1,0 +1,7 @@
+{# Product picture stand-in: an emoji on a coloured tile, chosen by product name. Classes only, so a strict CSP is fine. #}
+{% set icons = {
+  "Trail Backpack": "🎒", "Insulated Bottle": "🍶", "Wireless Earbuds": "🎧", "Desk Lamp": "💡",
+  "Mechanical Keyboard": "⌨️", "Running Shoes": "👟", "Yoga Mat": "🧘", "Coffee Grinder": "☕",
+  "Notebook Set": "📓", "USB-C Hub": "🔌"
+} %}
+<div class="tile tone-{{ p.id % 6 }}" aria-hidden="true">{{ icons.get(p.name, "🛍️") }}</div>

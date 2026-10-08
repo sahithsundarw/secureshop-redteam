@@ -1,13 +1,24 @@
 {% extends "base.html" %}
 {% block title %}{{ product.name }} - SecureShop{% endblock %}
 {% block content %}
-<h1>{{ product.name }}</h1>
-<p>{{ product.description }}</p>
-<p class="price">${{ '%.2f'|format(product.price) }}</p>
-<p>{{ product.stock }} in stock</p>
-<form action="{{ url_for('account.cart_add') }}" method="post">
-  <input type="hidden" name="product_id" value="{{ product.id }}">
-  <label>Quantity <input type="number" name="quantity" value="1" min="1"></label>
-  <button type="submit">Add to cart</button>
-</form>
+<nav class="crumbs" aria-label="Breadcrumb"><a href="{{ url_for('shop.home') }}">Home</a> / <a href="{{ url_for('shop.products') }}">Products</a> / {{ product.name }}</nav>
+<div class="product-page">
+  {% set p = product %}
+  {% include "_tile.html" %}
+  <div>
+    <h1>{{ product.name }}</h1>
+    <p>{{ product.description }}</p>
+    <p class="price">${{ '%.2f'|format(product.price) }}</p>
+    <p><span class="stock{% if product.stock < 10 %} low{% endif %}">{{ product.stock }} in stock</span></p>
+    <form action="{{ url_for('account.cart_add') }}" method="post">
+      <input type="hidden" name="product_id" value="{{ product.id }}">
+      <label>Quantity <input type="number" name="quantity" value="1" min="1"></label>
+      <button type="submit">Add to cart</button>
+    </form>
+    <ul class="facts">
+      <li>Free shipping on orders over $50</li>
+      <li>30-day returns on unused items</li>
+    </ul>
+  </div>
+</div>
 {% endblock %}
