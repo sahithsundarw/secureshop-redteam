@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.id }} - SecureShop{% endblock %}
+{% block content %}
+<h1>Order #{{ order.id }}</h1>
+<p>Placed {{ order.created_at }}</p>
+<table>
+  <tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+  {% for item in items %}
+  <tr>
+    <td>{{ item.name }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>${{ '%.2f'|format(item.price) }}</td>
+    <td>${{ '%.2f'|format(item.subtotal) }}</td>
+  </tr>
+  {% endfor %}
+</table>
+<p>Total: <strong>${{ '%.2f'|format(order.total) }}</strong></p>
+<p><a href="{{ url_for('account.orders') }}">Back to orders</a></p>
+{% endblock %}

@@ -1,7 +1,7 @@
 ---
 id: 03
 title: Core app - data model, seed data, public pages, registration and login
-status: In Review
+status: Done
 priority: P1
 depends_on: [01]
 spec_ref: spec.md sections 4.1, 4.2

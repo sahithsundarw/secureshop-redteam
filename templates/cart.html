@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Cart - SecureShop{% endblock %}
+{% block content %}
+<h1>Your cart</h1>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+{% if lines %}
+<table>
+  <tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th><th></th></tr>
+  {% for line in lines %}
+  <tr>
+    <td>{{ line.name }}</td>
+    <td>{{ line.quantity }}</td>
+    <td>${{ '%.2f'|format(line.price) }}</td>
+    <td>${{ '%.2f'|format(line.subtotal) }}</td>
+    <td>
+      <form action="{{ url_for('account.cart_remove') }}" method="post" class="inline">
+        <input type="hidden" name="item_id" value="{{ line.id }}">
+        <button type="submit">Remove</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<p>Total: <strong>${{ '%.2f'|format(total) }}</strong></p>
+<form action="{{ url_for('account.checkout') }}" method="post">
+  <button type="submit">Check out</button>
+</form>
+{% else %}
+<p>Your cart is empty.</p>
+{% endif %}
+{% endblock %}

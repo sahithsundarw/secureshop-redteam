@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Orders - SecureShop{% endblock %}
+{% block content %}
+<h1>Your orders</h1>
+{% if orders %}
+<table>
+  <tr><th>Order</th><th>Placed</th><th>Total</th></tr>
+  {% for order in orders %}
+  <tr>
+    <td><a href="{{ url_for('account.order_detail', order_id=order.id) }}">#{{ order.id }}</a></td>
+    <td>{{ order.created_at }}</td>
+    <td>${{ '%.2f'|format(order.total) }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>You have no orders yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Profile - SecureShop{% endblock %}
+{% block content %}
+<h1>Your profile</h1>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<p>Username: <strong>{{ user.username }}</strong></p>
+<form action="{{ url_for('account.profile') }}" method="post">
+  <label>Email <input type="email" name="email" value="{{ user.email }}" required></label>
+  <button type="submit">Save</button>
+</form>
+{% endblock %}
