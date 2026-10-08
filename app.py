@@ -5,6 +5,7 @@ from flask import Flask, render_template
 
 import db
 from routes_account import account_bp
+from routes_admin import admin_bp
 from routes_auth import auth_bp
 from routes_shop import shop_bp
 
@@ -22,6 +23,7 @@ def create_app(db_path=None):
     app.register_blueprint(shop_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(account_bp)
+    app.register_blueprint(admin_bp)
 
     @app.errorhandler(404)
     def not_found(_error):

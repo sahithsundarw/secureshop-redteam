@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Manage products - SecureShop{% endblock %}
+{% block content %}
+<h1>Manage products</h1>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<p><a href="{{ url_for('admin.product_new') }}">Add a product</a></p>
+<table>
+  <tr><th>ID</th><th>Name</th><th>Price</th><th>Stock</th><th></th></tr>
+  {% for p in products %}
+  <tr>
+    <td>{{ p.id }}</td>
+    <td>{{ p.name }}</td>
+    <td>${{ '%.2f'|format(p.price) }}</td>
+    <td>{{ p.stock }}</td>
+    <td>
+      <a href="{{ url_for('admin.product_edit', product_id=p.id) }}">Edit</a>
+      <form action="{{ url_for('admin.product_delete', product_id=p.id) }}" method="post" class="inline">
+        <button type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

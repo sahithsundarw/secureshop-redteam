@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Users - SecureShop{% endblock %}
+{% block content %}
+<h1>Users</h1>
+<table>
+  <tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th></tr>
+  {% for u in users %}
+  <tr><td>{{ u.id }}</td><td>{{ u.username }}</td><td>{{ u.email }}</td><td>{{ u.role }}</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

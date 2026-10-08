@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Admin - SecureShop{% endblock %}
+{% block content %}
+<h1>Admin</h1>
+<ul>
+  <li><a href="{{ url_for('admin.products') }}">Manage products</a></li>
+  <li><a href="{{ url_for('admin.users') }}">View users</a></li>
+</ul>
+{% endblock %}

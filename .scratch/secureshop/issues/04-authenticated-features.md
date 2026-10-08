@@ -1,7 +1,7 @@
 ---
 id: 04
 title: Authenticated features - cart, profile, order history
-status: In Review
+status: Done
 priority: P1
 depends_on: [03]
 spec_ref: spec.md section 4.1
