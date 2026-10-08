@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git tag *)",
+      "Bash(git branch *)",
+      "Bash(git switch *)",
+      "Bash(git checkout *)",
+      "Bash(git status*)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(uv venv *)",
+      "Bash(uv pip *)",
+      "Bash(uv python *)",
+      "Bash(.venv/Scripts/python.exe *)",
+      "Bash(.venv\\Scripts\\python.exe *)",
+      "PowerShell(git add *)",
+      "PowerShell(git commit *)",
+      "PowerShell(git tag *)",
+      "PowerShell(git branch *)",
+      "PowerShell(git switch *)",
+      "PowerShell(git checkout *)",
+      "PowerShell(git status*)",
+      "PowerShell(git diff *)",
+      "PowerShell(git log *)",
+      "PowerShell(uv venv *)",
+      "PowerShell(uv pip *)",
+      "PowerShell(uv python *)",
+      "PowerShell(.venv\\Scripts\\python.exe *)",
+      "PowerShell(netstat *)",
+      "PowerShell(java -version*)",
+      "Bash(curl * http://127.0.0.1:*)",
+      "Bash(curl * http://localhost:*)",
+      "PowerShell(curl.exe * http://127.0.0.1:*)"
+    ]
+  }
+}
