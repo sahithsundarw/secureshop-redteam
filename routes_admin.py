@@ -1,19 +1,16 @@
 from functools import wraps
 
-from flask import Blueprint, abort, current_app, redirect, render_template, request, session, url_for
+from flask import Blueprint, abort, current_app, redirect, render_template, request, url_for
 
 from db import connect
-from routes_account import login_required
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 
 def admin_required(view):
+    # VULNERABLE (V4, A01 Broken Access Control): neither login nor the admin role is checked.
     @wraps(view)
-    @login_required
     def wrapped(*args, **kwargs):
-        if session.get("role") != "admin":
-            abort(403)
         return view(*args, **kwargs)
 
     return wrapped

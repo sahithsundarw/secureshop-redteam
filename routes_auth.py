@@ -1,11 +1,16 @@
+import hashlib
 import sqlite3
 
 from flask import Blueprint, current_app, redirect, render_template, request, session, url_for
-from werkzeug.security import check_password_hash, generate_password_hash
 
 from db import connect
 
 auth_bp = Blueprint("auth", __name__)
+
+
+def _weak_hash(password):
+    # VULNERABLE (V5, A07 Authentication Failures): unsalted MD5 password storage.
+    return hashlib.md5(password.encode()).hexdigest()
 
 
 @auth_bp.route("/register", methods=["GET", "POST"])
@@ -23,7 +28,7 @@ def register():
     try:
         conn.execute(
             "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'user')",
-            (username, email, generate_password_hash(password)),
+            (username, email, _weak_hash(password)),
         )
         conn.commit()
     except sqlite3.IntegrityError:
@@ -42,11 +47,17 @@ def login():
     password = request.form.get("password", "")
     conn = connect(current_app.config["DB_PATH"])
     try:
-        user = conn.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+        # VULNERABLE (V1, A03 Injection): credentials are concatenated into the SQL string.
+        user = conn.execute(
+            f"SELECT * FROM users WHERE username = '{username}'"
+            f" AND password = '{_weak_hash(password)}'"
+        ).fetchone()
     finally:
         conn.close()
 
-    if user is None or not check_password_hash(user["password"], password):
+    # VULNERABLE (V5): no lockout or throttling after repeated failures.
+    # VULNERABLE (V8, A09 Logging Failures): failed and successful logins are not logged.
+    if user is None:
         return render_template("login.html", error="Invalid username or password."), 401
 
     session.clear()

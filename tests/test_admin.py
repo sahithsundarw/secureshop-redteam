@@ -138,6 +138,10 @@ def test_user_listing_never_shows_password_hashes(admin):
 ADMIN_PAGES = ["/admin", "/admin/products", "/admin/products/new", "/admin/users"]
 
 
+V4_XFAIL = pytest.mark.xfail(strict=True, reason="V4 planted in ticket 06; ticket 09 removes this marker")
+
+
+@V4_XFAIL
 @pytest.mark.parametrize("path", ADMIN_PAGES)
 def test_anonymous_is_redirected_to_login(client, path):
     response = client.get(path)
@@ -145,12 +149,14 @@ def test_anonymous_is_redirected_to_login(client, path):
     assert "/login" in response.headers["Location"]
 
 
+@V4_XFAIL
 @pytest.mark.parametrize("path", ADMIN_PAGES)
 def test_non_admin_is_forbidden(client, path):
     login(client, "alice", "AliceLab#1")
     assert client.get(path).status_code == 403
 
 
+@V4_XFAIL
 def test_non_admin_cannot_change_products(client, db_path):
     login(client, "alice", "AliceLab#1")
     assert client.post("/admin/products/new", data=GOOD).status_code == 403

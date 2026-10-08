@@ -192,8 +192,8 @@ def orders():
 def order_detail(order_id):
     conn = _conn()
     order = conn.execute(
-        "SELECT id, total, created_at FROM orders WHERE id = ? AND user_id = ?",
-        (order_id, session["user_id"]),
+        "SELECT id, total, created_at FROM orders WHERE id = ?",  # VULNERABLE (V3, A01 IDOR): no owner check
+        (order_id,),
     ).fetchone()
     if order is None:
         abort(404)

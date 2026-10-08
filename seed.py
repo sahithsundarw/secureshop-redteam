@@ -1,7 +1,7 @@
 """Load lab-only seed data. Refuses to run if the database already has users or products."""
 import sys
 
-from werkzeug.security import generate_password_hash
+import hashlib
 
 from db import DEFAULT_DB_PATH, connect, init_db
 
@@ -45,7 +45,8 @@ def seed(db_path=DEFAULT_DB_PATH):
         for username, email, password, role in USERS:
             conn.execute(
                 "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)",
-                (username, email, generate_password_hash(password), role),
+                # VULNERABLE (V5, A07): unsalted MD5 password storage.
+                (username, email, hashlib.md5(password.encode()).hexdigest(), role),
             )
         conn.executemany(
             "INSERT INTO products (name, description, price, stock) VALUES (?, ?, ?, ?)",

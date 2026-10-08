@@ -37,9 +37,9 @@ def search():
     term = request.args.get("q", "").strip()
     results = []
     if term:
-        like = f"%{term}%"
+        # VULNERABLE (V1, A03 Injection): the search term is concatenated into the SQL string.
         results = _query(
-            "SELECT * FROM products WHERE name LIKE ? OR description LIKE ? ORDER BY id",
-            (like, like),
+            f"SELECT * FROM products WHERE name LIKE '%{term}%' OR description LIKE '%{term}%'"
+            " ORDER BY id"
         )
     return render_template("search.html", term=term, products=results)

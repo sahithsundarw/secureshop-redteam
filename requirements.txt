@@ -1,4 +1,4 @@
-﻿# TEMPORARY working pins for ticket 01; final outdated pins are chosen and verified in ticket 06.
+﻿# VULNERABLE (V7, A06): deliberately outdated pins for the lab; advisories listed in docs/components.md.
 Flask==2.0.3
 Werkzeug==2.0.3
 Jinja2==3.0.3
