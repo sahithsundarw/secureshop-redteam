@@ -1,0 +1,100 @@
+{
+  "date": "2026-10-08T12:09:47",
+  "build": "after",
+  "git_ref": "fixed",
+  "proofs": {
+    "V1": {
+      "request_normal": "GET /search?q=lamp",
+      "normal_status": 200,
+      "request_probe": "GET /search?q=zzz%' UNION SELECT id, username, 'x', 1.0, 1 FROM users --",
+      "probe_status": 200,
+      "usernames_returned_in_product_list": [],
+      "login_with_quote_and_comment": {
+        "status": 401,
+        "location": null
+      },
+      "blocked": true
+    },
+    "V2": {
+      "request": "GET /search?q=<script>alert(1)</script>",
+      "status": 200,
+      "reflected_unescaped": false,
+      "blocked": true
+    },
+    "V3": {
+      "request": "GET /orders/<id> as alice, ids 1-4",
+      "alice_own_order_ids": [
+        1,
+        2
+      ],
+      "per_id": {
+        "1": {
+          "status": 200,
+          "own": true
+        },
+        "2": {
+          "status": 200,
+          "own": true
+        },
+        "3": {
+          "status": 404,
+          "own": false
+        },
+        "4": {
+          "status": 404,
+          "own": false
+        }
+      },
+      "blocked": true
+    },
+    "V4": {
+      "statuses": {
+        "anonymous": {
+          "/admin": 302,
+          "/admin/users": 302,
+          "/admin/products": 302
+        },
+        "alice": {
+          "/admin": 403,
+          "/admin/users": 403,
+          "/admin/products": 403
+        },
+        "admin": {
+          "/admin": 200,
+          "/admin/users": 200,
+          "/admin/products": 200
+        }
+      },
+      "anonymous_sees_user_list": false,
+      "blocked": true
+    },
+    "V5": {
+      "set_cookie_flags": [
+        "session=<value>; HttpOnly; Path=/; SameSite=Lax"
+      ],
+      "eight_wrong_passwords_statuses": [
+        401,
+        401,
+        401,
+        401,
+        401,
+        429,
+        429,
+        429
+      ],
+      "blocked": true
+    },
+    "V6": {
+      "missing_security_headers": [],
+      "error_probe_status": 200,
+      "stack_trace_in_error_page": false,
+      "blocked": true
+    },
+    "V7": {
+      "jquery_status": 404,
+      "jquery_version_banner": null,
+      "server_header": "Werkzeug/3.1.9 Python/3.11.14",
+      "blocked": true
+    }
+  }
+}

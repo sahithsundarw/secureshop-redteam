@@ -1,7 +1,7 @@
 ---
 id: 06
 title: Plant weaknesses V1-V8, pin outdated components, tag v1-vulnerable
-status: Backlog
+status: In Review
 priority: P1
 depends_on: [04, 05]
 spec_ref: spec.md sections 4.3, 4.4

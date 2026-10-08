@@ -1,7 +1,9 @@
-{# Product picture stand-in: an emoji on a coloured tile, chosen by product name. Classes only, so a strict CSP is fine. #}
-{% set icons = {
-  "Trail Backpack": "🎒", "Insulated Bottle": "🍶", "Wireless Earbuds": "🎧", "Desk Lamp": "💡",
-  "Mechanical Keyboard": "⌨️", "Running Shoes": "👟", "Yoga Mat": "🧘", "Coffee Grinder": "☕",
-  "Notebook Set": "📓", "USB-C Hub": "🔌"
-} %}
-<div class="tile tone-{{ p.id % 6 }}" aria-hidden="true">{{ icons.get(p.name, "🛍️") }}</div>
+{# Product picture. Known catalogue items have an illustration in static/img/products; anything else
+   (for example a product an admin adds) falls back to an emoji tile. Classes only, so a strict CSP is fine. #}
+{% set known = ["Trail Backpack", "Insulated Bottle", "Wireless Earbuds", "Desk Lamp", "Mechanical Keyboard",
+                "Running Shoes", "Yoga Mat", "Coffee Grinder", "Notebook Set", "USB-C Hub"] %}
+{% if p.name in known %}
+<div class="tile photo"><img src="{{ url_for('static', filename='img/products/' ~ (p.name|lower|replace(' ', '-')) ~ '.svg') }}" alt="{{ p.name }}" loading="lazy"></div>
+{% else %}
+<div class="tile tone-{{ p.id % 6 }}" aria-hidden="true">🛍️</div>
+{% endif %}

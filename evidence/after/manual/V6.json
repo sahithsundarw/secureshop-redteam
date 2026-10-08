@@ -1,0 +1,6 @@
+{
+  "missing_security_headers": [],
+  "error_probe_status": 200,
+  "stack_trace_in_error_page": false,
+  "blocked": true
+}

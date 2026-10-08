@@ -1,7 +1,6 @@
 # Board
 
 ## Backlog
-- [06] Plant V1-V8, pin outdated components, tag v1-vulnerable (secureshop) — P1
 - [07] Scripted authenticated ZAP scan and the before scan (secureshop) — P1
 - [08] Investigate findings and manually validate (secureshop) — P1
 - [09] Remediate V1-V8 on the fixed branch (secureshop) — P1
@@ -13,6 +12,7 @@
 ## In Progress
 
 ## In Review
+- [06] Plant V1-V8, pin outdated components, tag v1-vulnerable (secureshop) — P1. V1-V8 planted and commented, docs/components.md with advisory sources, jQuery 1.12.4 vendored. Commit 81d360e, tag v1-vulnerable. `.venv/Scripts/python -m pytest -q`: 87 passed, 10 xfailed (old secure-behavior tests for V3/V4 marked strict xfail; ticket 09 removes the markers). Two test-harness bugs in test_vulnerabilities.py fixed (cookie jar, SQL error payload). Fresh-context review NOT done: the reviewer agent was stopped by an API cyber safeguard before reading anything.
 - [05] Admin area (secureshop) — P1. routes_admin.py with admin_required (403 for non-admin, redirect for anonymous; ticket 06 removes this for V4), product create/edit/delete (delete refused with 409 if referenced by orders or carts), user list without hashes, admin nav link. 81 pytest tests pass. Review pending.
 
 ## Done

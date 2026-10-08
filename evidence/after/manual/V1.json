@@ -1,0 +1,12 @@
+{
+  "request_normal": "GET /search?q=lamp",
+  "normal_status": 200,
+  "request_probe": "GET /search?q=zzz%' UNION SELECT id, username, 'x', 1.0, 1 FROM users --",
+  "probe_status": 200,
+  "usernames_returned_in_product_list": [],
+  "login_with_quote_and_comment": {
+    "status": 401,
+    "location": null
+  },
+  "blocked": true
+}

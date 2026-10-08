@@ -1,0 +1,16 @@
+{
+  "set_cookie_flags": [
+    "session=<value>; HttpOnly; Path=/; SameSite=Lax"
+  ],
+  "eight_wrong_passwords_statuses": [
+    401,
+    401,
+    401,
+    401,
+    401,
+    429,
+    429,
+    429
+  ],
+  "blocked": true
+}
