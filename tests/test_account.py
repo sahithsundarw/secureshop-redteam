@@ -230,3 +230,43 @@ def test_order_detail_unknown_id_returns_404(alice):
 def test_order_detail_of_another_user_returns_404(alice, db_path):
     bob_order = order_ids(db_path, "bob")[0]
     assert alice.get(f"/orders/{bob_order}").status_code == 404
+
+
+# --- review follow-up: atomic checkout and quantity bound ----------------------------------
+
+
+@pytest.mark.parametrize("quantity", ["1001", str(2**63)])
+def test_add_oversized_quantity_returns_400(alice, quantity):
+    response = alice.post("/cart/add", data={"product_id": 1, "quantity": quantity})
+    assert response.status_code == 400
+
+
+def test_second_checkout_cannot_drive_stock_negative(client, db_path):
+    login(client, "alice", "AliceLab#1")
+    client.post("/cart/add", data={"product_id": 1, "quantity": 20})
+    assert client.post("/cart/checkout").status_code == 302
+    client.post("/logout")
+    login(client, "bob", "BobLab#1")
+    client.post("/cart/add", data={"product_id": 1, "quantity": 20})
+    before = order_ids(db_path, "bob")
+    assert client.post("/cart/checkout").status_code == 409
+    assert order_ids(db_path, "bob") == before
+    assert rows(db_path, "SELECT stock FROM products WHERE id = 1")[0]["stock"] == 5
+
+
+def test_checkout_stock_guard_holds_against_stale_cart_read(alice, db_path, monkeypatch):
+    """Simulates the check-then-write race: the cart read reports more stock than exists."""
+    import routes_account
+
+    real = routes_account._cart_lines
+    monkeypatch.setattr(
+        routes_account,
+        "_cart_lines",
+        lambda user_id: [{**dict(r), "stock": 999} for r in real(user_id)],
+    )
+    alice.post("/cart/add", data={"product_id": 1, "quantity": 26})
+    before = order_ids(db_path, "alice")
+    assert alice.post("/cart/checkout").status_code == 409
+    assert order_ids(db_path, "alice") == before
+    assert rows(db_path, "SELECT stock FROM products WHERE id = 1")[0]["stock"] == 25
+    assert len(rows(db_path, "SELECT id FROM cart_items")) == 1

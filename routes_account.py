@@ -17,6 +17,8 @@ from db import connect
 
 account_bp = Blueprint("account", __name__)
 
+MAX_QUANTITY = 1000
+
 
 def login_required(view):
     @wraps(view)
@@ -72,7 +74,7 @@ def cart_add():
         quantity = int(request.form.get("quantity", "1"))
     except ValueError:
         abort(400)
-    if quantity < 1:
+    if not 1 <= quantity <= MAX_QUANTITY:
         abort(400)
 
     conn = _conn()
@@ -114,28 +116,38 @@ def cart_remove():
 @login_required
 def checkout():
     user_id = session["user_id"]
+    conn = _conn()
+    # Take the write lock before reading so the stock check and the writes are one unit.
+    conn.execute("BEGIN IMMEDIATE")
     lines = _cart_lines(user_id)
     if not lines:
+        conn.rollback()
         return _render_cart("Your cart is empty.", 400)
     short = [line["name"] for line in lines if line["quantity"] > line["stock"]]
     if short:
+        conn.rollback()
         return _render_cart("Not enough stock for: " + ", ".join(short), 409)
 
-    conn = _conn()
     total = round(sum(line["subtotal"] for line in lines), 2)
     order_id = conn.execute(
         "INSERT INTO orders (user_id, total) VALUES (?, ?)", (user_id, total)
     ).lastrowid
     for line in lines:
+        updated = conn.execute(
+            "UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?",
+            (line["quantity"], line["product_id"], line["quantity"]),
+        )
+        if updated.rowcount != 1:
+            conn.rollback()
+            return _render_cart("Not enough stock for: " + line["name"], 409)
         conn.execute(
             "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)",
             (order_id, line["product_id"], line["quantity"], line["price"]),
         )
-        conn.execute(
-            "UPDATE products SET stock = stock - ? WHERE id = ?",
-            (line["quantity"], line["product_id"]),
-        )
-    conn.execute("DELETE FROM cart_items WHERE user_id = ?", (user_id,))
+    conn.executemany(
+        "DELETE FROM cart_items WHERE id = ? AND user_id = ?",
+        [(line["id"], user_id) for line in lines],
+    )
     conn.commit()
     return redirect(url_for("account.order_detail", order_id=order_id))
 
