@@ -2,7 +2,7 @@
 {% block title %}Search - SecureShop{% endblock %}
 {% block content %}
 <h1>Search results</h1>
-{# VULNERABLE (V2, A03 XSS): |safe disables Jinja autoescaping for the reflected term. #}
-{% if term %}<p>Results for "{{ term|safe }}"</p>{% endif %}
+{# V2 fix: Jinja autoescaping stays on for the reflected term. #}
+{% if term %}<p>Results for "{{ term }}"</p>{% endif %}
 {% include "_product_list.html" %}
 {% endblock %}
