@@ -1,16 +1,27 @@
-import hashlib
+import logging
 import sqlite3
+import time
 
 from flask import Blueprint, current_app, redirect, render_template, request, session, url_for
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from db import connect
+from security_log import log_event
 
 auth_bp = Blueprint("auth", __name__)
 
+MAX_FAILURES = 5
+LOCKOUT_SECONDS = 300
+# Compared against when the username is unknown, so both outcomes cost about the same time.
+_DUMMY_HASH = generate_password_hash("not-a-real-password")
 
-def _weak_hash(password):
-    # VULNERABLE (V5, A07 Authentication Failures): unsalted MD5 password storage.
-    return hashlib.md5(password.encode()).hexdigest()
+
+def _recent_failures(key):
+    """Failure timestamps for (ip, username) inside the lockout window, pruned in place."""
+    table = current_app.extensions["login_failures"]
+    cutoff = time.time() - LOCKOUT_SECONDS
+    table[key] = [t for t in table.get(key, []) if t > cutoff]
+    return table[key]
 
 
 @auth_bp.route("/register", methods=["GET", "POST"])
@@ -28,7 +39,7 @@ def register():
     try:
         conn.execute(
             "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'user')",
-            (username, email, _weak_hash(password)),
+            (username, email, generate_password_hash(password)),
         )
         conn.commit()
     except sqlite3.IntegrityError:
@@ -45,28 +56,35 @@ def login():
 
     username = request.form.get("username", "").strip()
     password = request.form.get("password", "")
+    key = (request.remote_addr, username.lower())
+    failures = _recent_failures(key)
+    if len(failures) >= MAX_FAILURES:
+        log_event("login_locked_out", f"username={username!r}", logging.WARNING)
+        return render_template("login.html", error="Too many failed attempts. Try again later."), 429
+
     conn = connect(current_app.config["DB_PATH"])
     try:
-        # VULNERABLE (V1, A03 Injection): credentials are concatenated into the SQL string.
-        user = conn.execute(
-            f"SELECT * FROM users WHERE username = '{username}'"
-            f" AND password = '{_weak_hash(password)}'"
-        ).fetchone()
+        # V1 fix: bound parameter. V5 fix: the password is checked against a salted hash.
+        user = conn.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
     finally:
         conn.close()
 
-    # VULNERABLE (V5): no lockout or throttling after repeated failures.
-    # VULNERABLE (V8, A09 Logging Failures): failed and successful logins are not logged.
-    if user is None:
+    stored = user["password"] if user else _DUMMY_HASH
+    if not check_password_hash(stored, password) or user is None:
+        failures.append(time.time())
+        log_event("login_failed", f"username={username!r}", logging.WARNING)
         return render_template("login.html", error="Invalid username or password."), 401
 
+    current_app.extensions["login_failures"].pop(key, None)
     session.clear()
     session["user_id"] = user["id"]
     session["role"] = user["role"]
+    log_event("login_succeeded", f"username={username!r}")
     return redirect(url_for("shop.home"))
 
 
 @auth_bp.route("/logout", methods=["POST"])
 def logout():
+    log_event("logout", "")
     session.clear()
     return redirect(url_for("shop.home"))
