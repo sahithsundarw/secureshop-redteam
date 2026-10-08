@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Register - SecureShop{% endblock %}
+{% block content %}
+<h1>Register</h1>
+{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+<form method="post" action="{{ url_for('auth.register') }}">
+  <label>Username <input name="username" required></label>
+  <label>Email <input name="email" type="email" required></label>
+  <label>Password <input name="password" type="password" required></label>
+  <button type="submit">Create account</button>
+</form>
+{% endblock %}

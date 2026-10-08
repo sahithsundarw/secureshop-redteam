@@ -1,0 +1,12 @@
+{% if products %}
+<ul class="products">
+  {% for p in products %}
+  <li>
+    <a href="{{ url_for('shop.product_detail', product_id=p.id) }}">{{ p.name }}</a>
+    <span class="price">${{ '%.2f'|format(p.price) }}</span>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No products found.</p>
+{% endif %}
