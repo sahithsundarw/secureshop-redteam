@@ -32,5 +32,25 @@
   <main>
     {% block content %}{% endblock %}
   </main>
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <strong class="brand-text">SecureShop</strong>
+        <p>A practice store built for application-security training. It runs on this machine only and sells nothing.</p>
+      </div>
+      <div>
+        <strong>Shop</strong>
+        <a href="{{ url_for('shop.products') }}">All products</a>
+        <a href="{{ url_for('shop.search', q='bottle') }}">Bottles</a>
+        <a href="{{ url_for('shop.search', q='lamp') }}">Lighting</a>
+      </div>
+      <div>
+        <strong>Account</strong>
+        <a href="{{ url_for('account.cart') }}">Cart</a>
+        <a href="{{ url_for('account.orders') }}">Orders</a>
+        <a href="{{ url_for('account.profile') }}">Profile</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

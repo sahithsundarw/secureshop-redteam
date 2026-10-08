@@ -7,3 +7,4 @@ __pycache__/
 zap-session/
 *.session
 *.log
+.playwright-mcp/

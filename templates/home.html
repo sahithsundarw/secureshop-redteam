@@ -1,6 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Welcome to SecureShop</h1>
-<h2>Featured products</h2>
+<section class="hero">
+  <div class="hero-copy">
+    <h1>Gear for long days outside</h1>
+    <p>Packs, bottles, shoes and desk kit for the trail and the trip home.</p>
+    <form action="{{ url_for('shop.search') }}" method="get">
+      <input type="search" name="q" placeholder="Search for a backpack, lamp, keyboard" aria-label="Search products">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <span class="blob b1">🎒</span><span class="blob b2">👟</span><span class="blob b3">🍶</span><span class="blob b4">🎧</span>
+  </div>
+</section>
+
+<ul class="perks">
+  <li><strong>Free shipping</strong><span>on orders over $50</span></li>
+  <li><strong>30-day returns</strong><span>on unused items</span></li>
+  <li><strong>Practice store</strong><span>no real orders or payments</span></li>
+</ul>
+
+<h2>Shop by category</h2>
+<div class="categories">
+  <a href="{{ url_for('shop.search', q='backpack') }}"><span>🎒</span>Packs</a>
+  <a href="{{ url_for('shop.search', q='shoes') }}"><span>👟</span>Footwear</a>
+  <a href="{{ url_for('shop.search', q='lamp') }}"><span>💡</span>Desk</a>
+  <a href="{{ url_for('shop.search', q='USB') }}"><span>🔌</span>Tech</a>
+</div>
+
+<div class="section-head"><h2>Featured products</h2><a href="{{ url_for('shop.products') }}">See all products</a></div>
 {% include "_product_list.html" %}
 {% endblock %}

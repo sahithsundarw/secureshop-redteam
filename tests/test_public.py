@@ -53,7 +53,7 @@ def test_seed_script_exits_nonzero_on_non_empty_database(db_path):
 def test_home_lists_products(client):
     response = client.get("/")
     assert response.status_code == 200
-    assert b"Welcome to SecureShop" in response.data
+    assert b"Gear for long days outside" in response.data
     assert b"Trail Backpack" in response.data
 
 
