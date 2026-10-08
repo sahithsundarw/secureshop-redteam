@@ -1,0 +1,16 @@
+{
+  "set_cookie_flags": [
+    "session=<value>; Path=/"
+  ],
+  "eight_wrong_passwords_statuses": [
+    401,
+    401,
+    401,
+    401,
+    401,
+    401,
+    401,
+    401
+  ],
+  "blocked": false
+}

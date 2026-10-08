@@ -1,0 +1,6 @@
+{
+  "request": "GET /search?q=<script>alert(1)</script>",
+  "status": 200,
+  "reflected_unescaped": true,
+  "blocked": false
+}

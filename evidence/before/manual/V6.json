@@ -1,0 +1,11 @@
+{
+  "missing_security_headers": [
+    "Content-Security-Policy",
+    "X-Content-Type-Options",
+    "X-Frame-Options",
+    "Referrer-Policy"
+  ],
+  "error_probe_status": 500,
+  "stack_trace_in_error_page": true,
+  "blocked": false
+}

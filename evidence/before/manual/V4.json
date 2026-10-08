@@ -1,0 +1,21 @@
+{
+  "statuses": {
+    "anonymous": {
+      "/admin": 200,
+      "/admin/users": 200,
+      "/admin/products": 200
+    },
+    "alice": {
+      "/admin": 200,
+      "/admin/users": 200,
+      "/admin/products": 200
+    },
+    "admin": {
+      "/admin": 200,
+      "/admin/users": 200,
+      "/admin/products": 200
+    }
+  },
+  "anonymous_sees_user_list": true,
+  "blocked": false
+}
