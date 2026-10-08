@@ -1,17 +1,17 @@
 # Board
 
 ## Backlog
-- [07] Scripted authenticated ZAP scan and the before scan (secureshop) — P1
-- [08] Investigate findings and manually validate (secureshop) — P1
-- [09] Remediate V1-V8 on the fixed branch (secureshop) — P1
-- [10] Retest scan and before-versus-after comparison (secureshop) — P1
-- [11] Final report and README (secureshop) — P2
 
 ## Ready
 
 ## In Progress
 
 ## In Review
+- [11] Final report and README (secureshop) — P2. docs/report.md has all 7 sections, README covers setup, both builds, credentials, scans and tests. Private repo: https://github.com/sahithsundarw/secureshop-redteam (visibility not confirmed from this session). No fresh-context review.
+- [10] Retest scan and comparison (secureshop) — P1. evidence/after/ plus evidence/comparison.md: High 7 to 0, Medium 169 to 89, Low 96 to 55 (User Agent Fuzzer noise excluded). Manual proofs rerun, V1-V7 blocked. Remaining: CSRF tokens, Server header (explained in docs/report.md). After scan ran before the UI redesign.
+- [09] Remediate V1-V8 on `fixed` (secureshop) — P1. 6 commits, `fixed` branch: 104 passed. Fix table in docs/report.md. Product images are not yet on `fixed`. No fresh-context review.
+- [08] Investigate findings and validate (secureshop) — P1. docs/findings.md has 12 findings with five questions each; proofs in evidence/before/manual/. ZAP missed V2, V3, V4, V8 and parts of V5/V6/V7; one false positive (time-based SQLi on edit pages).
+- [07] Authenticated ZAP scan and before scan (secureshop) — P1. scripts/auth_scan.py, one command per build, refuses non-local targets; evidence/before/. Authenticated pages return 200 for alice and admin, 302 for anonymous.
 - [06] Plant V1-V8, pin outdated components, tag v1-vulnerable (secureshop) — P1. V1-V8 planted and commented, docs/components.md with advisory sources, jQuery 1.12.4 vendored. Commit 81d360e, tag v1-vulnerable. `.venv/Scripts/python -m pytest -q`: 87 passed, 10 xfailed (old secure-behavior tests for V3/V4 marked strict xfail; ticket 09 removes the markers). Two test-harness bugs in test_vulnerabilities.py fixed (cookie jar, SQL error payload). Fresh-context review NOT done: the reviewer agent was stopped by an API cyber safeguard before reading anything.
 - [05] Admin area (secureshop) — P1. routes_admin.py with admin_required (403 for non-admin, redirect for anonymous; ticket 06 removes this for V4), product create/edit/delete (delete refused with 409 if referenced by orders or carts), user list without hashes, admin nav link. 81 pytest tests pass. Review pending.
 
