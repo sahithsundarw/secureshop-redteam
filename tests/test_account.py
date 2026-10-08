@@ -227,7 +227,6 @@ def test_order_detail_unknown_id_returns_404(alice):
     assert alice.get("/orders/9999").status_code == 404
 
 
-@pytest.mark.xfail(strict=True, reason="V3 planted in ticket 06; ticket 09 removes this marker")
 def test_order_detail_of_another_user_returns_404(alice, db_path):
     bob_order = order_ids(db_path, "bob")[0]
     assert alice.get(f"/orders/{bob_order}").status_code == 404
