@@ -1,7 +1,7 @@
 ---
 id: 02
 title: Install JDK and ZAP, run one unauthenticated scan
-status: Ready
+status: In Review
 priority: P1
 depends_on: [01]
 spec_ref: spec.md sections 2, 3, 6, 10

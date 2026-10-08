@@ -1,0 +1,61 @@
+{
+  "scan_date": "2026-10-08T11:11:59",
+  "target_url": "http://127.0.0.1:8080",
+  "zap_version": "2.17.0",
+  "scan_type": "baseline (spider + passive)",
+  "alert_count": 8,
+  "alerts_by_severity": {
+    "Medium": 4,
+    "Low": 4
+  },
+  "alerts": [
+    {
+      "name": "Missing Anti-clickjacking Header",
+      "risk": "Medium",
+      "url": "http://127.0.0.1:8080",
+      "evidence": ""
+    },
+    {
+      "name": "Content Security Policy (CSP) Header Not Set",
+      "risk": "Medium",
+      "url": "http://127.0.0.1:8080/robots.txt",
+      "evidence": ""
+    },
+    {
+      "name": "Content Security Policy (CSP) Header Not Set",
+      "risk": "Medium",
+      "url": "http://127.0.0.1:8080/sitemap.xml",
+      "evidence": ""
+    },
+    {
+      "name": "Content Security Policy (CSP) Header Not Set",
+      "risk": "Medium",
+      "url": "http://127.0.0.1:8080",
+      "evidence": ""
+    },
+    {
+      "name": "Server Leaks Version Information via \"Server\" HTTP Response Header Field",
+      "risk": "Low",
+      "url": "http://127.0.0.1:8080",
+      "evidence": "Werkzeug/2.0.3 Python/3.11.14"
+    },
+    {
+      "name": "Server Leaks Version Information via \"Server\" HTTP Response Header Field",
+      "risk": "Low",
+      "url": "http://127.0.0.1:8080/robots.txt",
+      "evidence": "Werkzeug/2.0.3 Python/3.11.14"
+    },
+    {
+      "name": "Server Leaks Version Information via \"Server\" HTTP Response Header Field",
+      "risk": "Low",
+      "url": "http://127.0.0.1:8080/sitemap.xml",
+      "evidence": "Werkzeug/2.0.3 Python/3.11.14"
+    },
+    {
+      "name": "X-Content-Type-Options Header Missing",
+      "risk": "Low",
+      "url": "http://127.0.0.1:8080",
+      "evidence": ""
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 ---
 id: 01
 title: Repo init, uv venv and hello-world Flask app
-status: In Progress
+status: In Review
 priority: P1
 depends_on: []
 spec_ref: spec.md sections 2, 4.4, 10
