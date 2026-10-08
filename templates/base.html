@@ -32,7 +32,5 @@
   <main>
     {% block content %}{% endblock %}
   </main>
-  {# VULNERABLE (V7, A06): outdated jQuery 1.12.4 (see docs/components.md). #}
-  <script src="{{ url_for('static', filename='vendor/jquery-1.12.4.min.js') }}"></script>
 </body>
 </html>

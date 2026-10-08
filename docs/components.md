@@ -18,3 +18,13 @@ The deliberately vulnerable Flask app (local, 127.0.0.1, authorised university l
 ## How verified
 
 Checked on 2026-10-08. Affected ranges and fixed versions come from GitHub Advisory Database pages (github.com/advisories/GHSA-...) fetched with WebFetch. Latest Flask and Werkzeug versions come from the PyPI JSON API and project page; the Flask and Werkzeug 2.0.3 PyPI JSON pages also listed these ids. Latest jQuery comes from https://jquery.com/download/ (4.0.0) and https://github.com/jquery/jquery/releases (3.7.1, 4.0.0). NVD pages returned no content through the fetch tool, so NVD was not used as a source. The Flask 2.0.3 lower bounds are implied by "before X" wording; no lower bound was stated for CVE-2026-27205.
+
+## Fixed build (branch `fixed`, ticket 09)
+
+| Component | Vulnerable build | Fixed build | Outcome |
+|---|---|---|---|
+| Flask | 2.0.3 | 3.1.3 (latest verified above) | Covers every Flask advisory in the table: CVE-2023-30861 (fixed in 2.2.5/2.3.2) and CVE-2026-27205 (fixed in 3.1.3). |
+| Werkzeug | 2.0.3 | 3.1.9 (latest verified above) | Covers CVE-2023-25577 (2.2.3), CVE-2024-49767 (3.0.6) and CVE-2024-34069 (3.0.3), and the omitted CVE-2023-23934 (2.2.3). |
+| jQuery | 1.12.4 vendored | removed | No template or script used it, so the file was deleted rather than upgraded. Removes CVE-2020-11022, CVE-2020-11023, CVE-2015-9251 and CVE-2019-11358 from the attack surface. |
+
+Jinja2, MarkupSafe, itsdangerous and click are no longer pinned; they resolve to the versions Flask 3.1.3 requires. This covers the table's advisories only; it is not a full audit of every transitive dependency.
